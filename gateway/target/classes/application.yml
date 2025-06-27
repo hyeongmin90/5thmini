@@ -1,0 +1,100 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+#<<< API Gateway / Routes
+      routes:
+        - id: author
+          uri: http://localhost:8082
+          predicates:
+            - Path=/authors/**, 
+        - id: subscribermanagement
+          uri: http://localhost:8083
+          predicates:
+            - Path=/subscribers/**, /subscribes/**, 
+        - id: manuscript
+          uri: http://localhost:8084
+          predicates:
+            - Path=/manuscripts/**, 
+        - id: point
+          uri: http://localhost:8085
+          predicates:
+            - Path=/points/**, 
+        - id: publisher
+          uri: http://localhost:8086
+          predicates:
+            - Path=/publishes/**, 
+        - id: bookplatform
+          uri: http://localhost:8087
+          predicates:
+            - Path=, /subscribeBooks/**, /publishBooks/**
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+#>>> API Gateway / Routes
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: author
+          uri: http://author:8080
+          predicates:
+            - Path=/authors/**, 
+        - id: subscribermanagement
+          uri: http://subscribermanagement:8080
+          predicates:
+            - Path=/subscribers/**, /subscribes/**, 
+        - id: manuscript
+          uri: http://manuscript:8080
+          predicates:
+            - Path=/manuscripts/**, 
+        - id: point
+          uri: http://point:8080
+          predicates:
+            - Path=/points/**, 
+        - id: publisher
+          uri: http://publisher:8080
+          predicates:
+            - Path=/publishes/**, 
+        - id: bookplatform
+          uri: http://bookplatform:8080
+          predicates:
+            - Path=, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
