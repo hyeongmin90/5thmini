@@ -1,6 +1,5 @@
 package ktminithteam.infra;
 
-import java.util.List;
 import ktminithteam.domain.*;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -9,5 +8,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
     collectionResourceRel = "subscribe",
     path = "subscribe"
 )
-public interface SubscribeBookRepository
-    extends PagingAndSortingRepository<SubscribeBook, Long> {}
+public interface SubscribeRepository
+    extends PagingAndSortingRepository<Subscribe, Long> {}

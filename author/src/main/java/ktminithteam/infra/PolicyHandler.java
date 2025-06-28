@@ -1,9 +1,5 @@
 package ktminithteam.infra;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.naming.NameParser;
-import javax.naming.NameParser;
 import javax.transaction.Transactional;
 import ktminithteam.config.kafka.KafkaProcessor;
 import ktminithteam.domain.*;

@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PublishBookViewHandler {
-
-    //<<< DDD / CQRS
     @Autowired
     private PublishBookRepository publishBookRepository;
 
@@ -30,7 +28,7 @@ public class PublishBookViewHandler {
             // view 객체 생성
             PublishBook publishBook = new PublishBook();
             // view 객체에 이벤트의 Value 를 set 함
-            publishBook.setPublishId(bookPublished.getpublishId());
+            publishBook.setPublishId(bookPublished.getPublishId());
             publishBook.setAuthorId(bookPublished.getAuthorId());
             publishBook.setTitle(bookPublished.getTitle());
             publishBook.setContent(bookPublished.getContent());
@@ -44,21 +42,4 @@ public class PublishBookViewHandler {
             e.printStackTrace();
         }
     }
-
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='SubscribeSucceed'"
-    )
-    public void whenSubscribeSucceed_then_UPDATE_1(
-        @Payload SubscribeSucceed subscribeSucceed
-    ) {
-        try {
-            if (!subscribeSucceed.validate()) return;
-            // view 객체 조회
-            publishBookRepository.findByPublishId(sub.getPublishId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    //>>> DDD / CQRS
 }

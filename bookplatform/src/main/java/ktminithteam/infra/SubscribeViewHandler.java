@@ -11,11 +11,11 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SubscribeBookViewHandler {
+public class SubscribeViewHandler {
 
     //<<< DDD / CQRS
     @Autowired
-    private SubscribeBookRepository subscribeBookRepository;
+    private SubscribeRepository subscribeBookRepository;
 
     @StreamListener(
         value = KafkaProcessor.INPUT,
@@ -28,7 +28,7 @@ public class SubscribeBookViewHandler {
             if (!subscribeSucceed.validate()) return;
 
             // view 객체 생성
-            SubscribeBook subscribeBook = new SubscribeBook();
+            Subscribe subscribeBook = new Subscribe();
             // view 객체에 이벤트의 Value 를 set 함
             subscribeBook.setSubscribeId(subscribeSucceed.getSubscribeId());
             subscribeBook.setSubscriberId(subscribeSucceed.getSubscriberId());

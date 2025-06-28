@@ -1,10 +1,8 @@
 package ktminithteam.domain;
 
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
+import ktminithteam.BookplatformApplication;
 
 @Entity
 @Table(name = "Book_table")
@@ -16,4 +14,21 @@ public class Book {
     private Long publishId;
     private Long subscribeCount;
     private boolean isBestseller;
+
+    public static BookRepository repository() {
+        BookRepository bookRepository = BookplatformApplication.applicationContext.getBean(
+            BookRepository.class
+        );
+        return bookRepository;
+    }
+
+    public void increaseSubscribeCount() {
+        subscribeCount++;
+    }
+
+    public void checkBestseller() {
+        if (subscribeCount >= 10) {
+            isBestseller = true;
+        }
+    }
 }

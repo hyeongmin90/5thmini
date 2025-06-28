@@ -2,7 +2,9 @@ package ktminithteam.infra;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.naming.NameParser;
+
+import java.util.Optional;
+
 import javax.naming.NameParser;
 import javax.transaction.Transactional;
 import ktminithteam.config.kafka.KafkaProcessor;
@@ -17,6 +19,9 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class PolicyHandler {
 
+    @Autowired
+    BookRepository bookRepository;
+
     @StreamListener(KafkaProcessor.INPUT)
     public void whatever(@Payload String eventString) {}
 
@@ -24,7 +29,7 @@ public class PolicyHandler {
         value = KafkaProcessor.INPUT,
         condition = "headers['type']=='BookPublished'"
     )
-    public void wheneverBookPublished_Publish(
+    public void wheneverBookPublished_CreatBook(
         @Payload BookPublished bookPublished
     ) {
         BookPublished event = bookPublished;
@@ -32,7 +37,11 @@ public class PolicyHandler {
             "\n\n##### listener Publish : " + bookPublished + "\n\n"
         );
         
-        
+        Book book = new Book();
+        book.setPublishId(event.getPublishId());
+        book.setSubscribeCount(0L);
+        book.setBestseller(false);
+        bookRepository.save(book);
 
     }
 
@@ -49,8 +58,16 @@ public class PolicyHandler {
             subscribeSucceed +
             "\n\n"
         );
-        // Sample Logic //
 
+        try {
+            Book book = bookRepository.findByPublishId(event.getPublishId()).get();
+            book.increaseSubscribeCount();
+            book.checkBestseller();
+            bookRepository.save(book);
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
     }
 }
 //>>> Clean Arch / Inbound Adaptor
