@@ -12,6 +12,6 @@ public class SubscribeSucceed extends AbstractEvent {
     private Long id;
     private Long subscriberId;
     private Date expirationDate;
-    private Long bookId;
+    private Long publishId;
     private String status;
 }

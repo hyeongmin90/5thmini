@@ -14,7 +14,7 @@ public class PublishBook {
 
     @Id
     //@GeneratedValue(strategy=GenerationType.AUTO)
-    private Long bookId;
+    private Long publishId;
 
     private String title;
     private String content;
@@ -22,6 +22,4 @@ public class PublishBook {
     private String coverUrl;
     private String category;
     private Long cost;
-    private Long bookId;
-    private Long subscribeCount;
 }
