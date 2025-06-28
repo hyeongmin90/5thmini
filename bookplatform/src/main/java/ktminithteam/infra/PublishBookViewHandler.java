@@ -17,7 +17,10 @@ public class PublishBookViewHandler {
     @Autowired
     private PublishBookRepository publishBookRepository;
 
-    @StreamListener(KafkaProcessor.INPUT)
+    @StreamListener(
+        value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='BookPublished'"
+    )
     public void whenBookPublished_then_CREATE_1(
         @Payload BookPublished bookPublished
     ) {
@@ -27,15 +30,14 @@ public class PublishBookViewHandler {
             // view 객체 생성
             PublishBook publishBook = new PublishBook();
             // view 객체에 이벤트의 Value 를 set 함
-            publishBook.setBookId(bookPublished.getBookId());
+            publishBook.setPublishId(bookPublished.getpublishId());
+            publishBook.setAuthorId(bookPublished.getAuthorId());
             publishBook.setTitle(bookPublished.getTitle());
             publishBook.setContent(bookPublished.getContent());
             publishBook.setSummaryUrl(bookPublished.getSummaryUrl());
             publishBook.setCoverUrl(bookPublished.getCoverUrl());
             publishBook.setCategory(bookPublished.getCategory());
             publishBook.setCost(bookPublished.getCost());
-            publishBook.setBookId(bookPublished.getBookId());
-            publishBook.setSubscribeCount(0);
             // view 레파지 토리에 save
             publishBookRepository.save(publishBook);
         } catch (Exception e) {
@@ -43,14 +45,17 @@ public class PublishBookViewHandler {
         }
     }
 
-    @StreamListener(KafkaProcessor.INPUT)
+    @StreamListener(
+        value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='SubscribeSucceed'"
+    )
     public void whenSubscribeSucceed_then_UPDATE_1(
         @Payload SubscribeSucceed subscribeSucceed
     ) {
         try {
             if (!subscribeSucceed.validate()) return;
             // view 객체 조회
-
+            publishBookRepository.findByPublishId(sub.getPublishId);
         } catch (Exception e) {
             e.printStackTrace();
         }

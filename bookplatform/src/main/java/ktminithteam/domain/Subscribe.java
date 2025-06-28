@@ -8,11 +8,11 @@ import lombok.Data;
 @Entity
 @Table(name = "SubscribeBook_table")
 @Data
-public class SubscribeBook {
+public class Subscribe {
 
     @Id
     //@GeneratedValue(strategy=GenerationType.AUTO)
-    private String subscribeId;
+    private Long subscribeId;
     private Long publishId;
     private Long subscriberId;
     private Date expriationDate;

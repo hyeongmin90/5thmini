@@ -31,10 +31,8 @@ public class PolicyHandler {
         System.out.println(
             "\n\n##### listener Publish : " + bookPublished + "\n\n"
         );
-        // Comments //
-        //조회용 출간 데이터 복사
-
-        // Sample Logic //
+        
+        
 
     }
 
@@ -50,21 +48,6 @@ public class PolicyHandler {
             "\n\n##### listener IncreaseSubscribeCount : " +
             subscribeSucceed +
             "\n\n"
-        );
-        // Sample Logic //
-
-    }
-
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='SubscribeSucceed'"
-    )
-    public void wheneverSubscribeSucceed_CopySubscribe(
-        @Payload SubscribeSucceed subscribeSucceed
-    ) {
-        SubscribeSucceed event = subscribeSucceed;
-        System.out.println(
-            "\n\n##### listener CopySubscribe : " + subscribeSucceed + "\n\n"
         );
         // Sample Logic //
 

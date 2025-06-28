@@ -15,7 +15,7 @@ public class PublishBook {
     @Id
     //@GeneratedValue(strategy=GenerationType.AUTO)
     private Long publishId;
-
+    private Long authorId;
     private String title;
     private String content;
     private String summaryUrl;

@@ -17,7 +17,10 @@ public class SubscribeBookViewHandler {
     @Autowired
     private SubscribeBookRepository subscribeBookRepository;
 
-    @StreamListener(KafkaProcessor.INPUT)
+    @StreamListener(
+        value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='SubscribeSucceed'"
+    )
     public void whenSubscribeSucceed_then_CREATE_1(
         @Payload SubscribeSucceed subscribeSucceed
     ) {
@@ -27,13 +30,12 @@ public class SubscribeBookViewHandler {
             // view 객체 생성
             SubscribeBook subscribeBook = new SubscribeBook();
             // view 객체에 이벤트의 Value 를 set 함
-            subscribeBook.setSubscribeId(
-                String.valueOf(subscribeSucceed.getId())
-            );
+            subscribeBook.setSubscribeId(subscribeSucceed.getSubscribeId());
+            subscribeBook.setSubscriberId(subscribeSucceed.getSubscriberId());
+            subscribeBook.setPublishId(subscribeSucceed.getPublishId());
             subscribeBook.setExpriationDate(
                 subscribeSucceed.getExpirationDate()
             );
-            subscribeBook.setBookId(subscribeSucceed.getBookId());
             // view 레파지 토리에 save
             subscribeBookRepository.save(subscribeBook);
         } catch (Exception e) {
