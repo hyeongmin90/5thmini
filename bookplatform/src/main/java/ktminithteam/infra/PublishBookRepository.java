@@ -6,8 +6,8 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import java.util.Optional;
 
 @RepositoryRestResource(
-    collectionResourceRel = "publishBooks",
-    path = "publishBooks"
+    collectionResourceRel = "publishbooks",
+    path = "publishbooks"
 )
 public interface PublishBookRepository
     extends PagingAndSortingRepository<PublishBook, Long> {
