@@ -22,6 +22,9 @@ public class PolicyHandler {
     @Autowired
     BookRepository bookRepository;
 
+    @Autowired
+    SubscribeRepository subscribeRepository;
+
     @StreamListener(KafkaProcessor.INPUT)
     public void whatever(@Payload String eventString) {}
 

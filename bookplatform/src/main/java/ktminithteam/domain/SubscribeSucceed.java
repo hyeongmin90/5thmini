@@ -8,7 +8,7 @@ import lombok.*;
 @ToString
 public class SubscribeSucceed extends AbstractEvent {
 
-    private Long subscribeId;
+    private Long id;
     private Long subscriberId;
     private Date expirationDate;
     private Long publishId;

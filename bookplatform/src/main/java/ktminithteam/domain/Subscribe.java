@@ -15,5 +15,5 @@ public class Subscribe {
     private Long subscribeId;
     private Long publishId;
     private Long subscriberId;
-    private Date expriationDate;
+    private Date expirationDate;
 }
