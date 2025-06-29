@@ -59,6 +59,8 @@ public class Subscribe {
     public static void subscribeSuccess(Substart substart) {
         repository().findById(substart.getId()).ifPresent(subscribe->{
             subscribe.setStatus("SUCCESS");
+            if (substart.getSubscriptionTicketExpirationDate() != null)
+                subscribe.setExpirationDate(substart.getSubscriptionTicketExpirationDate());
             repository().save(subscribe);
         });
     }

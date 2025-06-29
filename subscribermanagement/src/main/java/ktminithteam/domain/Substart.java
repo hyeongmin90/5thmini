@@ -11,4 +11,5 @@ public class Substart extends AbstractEvent {
 
     private Long id;
     private Long subscriberId;
+    private Date subscriptionTicketExpirationDate;
 }
