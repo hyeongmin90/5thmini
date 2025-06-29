@@ -34,6 +34,7 @@ public class Subscribe {
 */
     @PostPersist
     public void onPostPersist() {
+        this.setStatus("CHECKING");
         RequestSubscribed requestSubscribed = new RequestSubscribed(this);
         requestSubscribed.publishAfterCommit();
     } 
