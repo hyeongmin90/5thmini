@@ -3,11 +3,15 @@ package ktminithteam.infra;
 import javax.transaction.Transactional;
 import ktminithteam.domain.*;
 import ktminithteam.dto.MyBookDto;
+import ktminithteam.dto.RecommendBookDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
@@ -15,12 +19,12 @@ import java.util.stream.Collectors;
 
 @RestController
 @Transactional
-@RequestMapping(value="/mybooks")
-public class MybookController {
+public class PlatformController {
     @Autowired SubscribeRepository subscribeRepository;
     @Autowired PublishBookRepository publishBookRepository;
+    @Autowired BookRepository bookRepository;
 
-    @GetMapping
+    @GetMapping(value="/mybooks")
     public ResponseEntity<List<MyBookDto>> getMyBooks(@RequestParam Long subscriberId) {
         // 1. 구독 정보 조회
         List<Subscribe> subscribes = subscribeRepository.findBySubscriberId(subscriberId);
@@ -53,5 +57,37 @@ public class MybookController {
                 })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(mybooks);
+    }
+
+    @GetMapping(value="recommendbooks")
+    public Page<RecommendBookDto> getRecommendBooks(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "subscribeCount"));
+        Page<Book> bookPage = bookRepository.findAll(pageable);
+        List<Long> publishIds = bookPage
+                .stream()
+                .map(Book::getPublishId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        
+        List<PublishBook> publishBooks = publishBookRepository.findByPublishIdIn(publishIds);
+        Map<Long, PublishBook> publishBookMap = publishBooks.stream()
+                .collect(Collectors.toMap(PublishBook::getPublishId, pb -> pb));
+        
+        return bookPage.map(book -> {
+            PublishBook pub = publishBookMap.get(book.getPublishId());
+            return new RecommendBookDto(
+                    pub.getTitle(),
+                    pub.getAuthorId(),
+                    pub.getCoverUrl(),
+                    pub.getSummaryUrl(),
+                    pub.getCategory(),
+                    book.isBestseller(),
+                    book.getSubscribeCount()
+            );
+        });
     }
 }

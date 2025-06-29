@@ -16,4 +16,5 @@ public interface PublishBookRepository
 
     Optional<PublishBook> findByPublishId(Long publishId);
 
-    List<PublishBook> findByPublishIdIn(List<Long> publishIds);}
+    List<PublishBook> findByPublishIdIn(List<Long> publishIds);
+}
