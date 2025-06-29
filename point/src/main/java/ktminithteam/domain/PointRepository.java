@@ -1,10 +1,12 @@
 package ktminithteam.domain;
 
-import ktminithteam.domain.*;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-//<<< PoEAA / Repository
+import java.util.Optional;
+
 @RepositoryRestResource(collectionResourceRel = "points", path = "points")
-public interface PointRepository
-    extends PagingAndSortingRepository<Point, Long> {}
+public interface PointRepository extends PagingAndSortingRepository<Point, Long> {
+    Optional<Point> findBySubscriberId(Long subscriberId);
+}
+
