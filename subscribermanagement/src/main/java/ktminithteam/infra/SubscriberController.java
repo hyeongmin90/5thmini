@@ -23,7 +23,7 @@ public class SubscriberController {
     @RequestMapping(value = "/subscribers/joinmembership",
             method = RequestMethod.POST,
             produces = "application/json;charset=UTF-8")
-    public Subscriber joinMembership(HttpServletRequest request, HttpServletResponse response, 
+    public Subscriber joinMembership(HttpServletRequest request, HttpServletResponse response
         ) throws Exception {
             System.out.println("##### /subscriber/joinMembership  called #####");
             Subscriber subscriber = new Subscriber();
