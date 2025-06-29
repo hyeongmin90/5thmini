@@ -29,6 +29,14 @@ public class Subscribe {
     private String status;
 
     private Date expirationDate;
+/**
+@TODO Cost 내용 넣어야함, 현재 cost 필드 null
+*/
+    @PostPersist
+    public void onPostPersist() {
+        RequestSubscribed requestSubscribed = new RequestSubscribed(this);
+        requestSubscribed.publishAfterCommit();
+    } 
 
     public static SubscribeRepository repository() {
         SubscribeRepository subscribeRepository = SubscribermanagementApplication.applicationContext.getBean(
@@ -39,55 +47,19 @@ public class Subscribe {
 
     //<<< Clean Arch / Port Method
     public static void subscribeFailure(RejectSubscribe rejectSubscribe) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
-        Subscribe subscribe = new Subscribe();
-        repository().save(subscribe);
-
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(rejectSubscribe.get???()).ifPresent(subscribe->{
-            
-            subscribe // do something
+        repository().findById(rejectSubscribe.getId()).ifPresent(subscribe->{
+            subscribe.setStatus("FAILURE");
             repository().save(subscribe);
-
-
-         });
-        */
-
+        });
     }
 
     //>>> Clean Arch / Port Method
     //<<< Clean Arch / Port Method
     public static void subscribeSuccess(Substart substart) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
-        Subscribe subscribe = new Subscribe();
-        repository().save(subscribe);
-
-        SubscribeSucceed subscribeSucceed = new SubscribeSucceed(subscribe);
-        subscribeSucceed.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(substart.get???()).ifPresent(subscribe->{
-            
-            subscribe // do something
+        repository().findById(substart.getId()).ifPresent(subscribe->{
+            subscribe.setStatus("SUCCESS");
             repository().save(subscribe);
-
-            SubscribeSucceed subscribeSucceed = new SubscribeSucceed(subscribe);
-            subscribeSucceed.publishAfterCommit();
-
-         });
-        */
-
+        });
     }
     //>>> Clean Arch / Port Method
 

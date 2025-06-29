@@ -13,7 +13,6 @@ public class RequestSubscribed extends AbstractEvent {
 
     private Long id;
     private Long bookId;
-    private Long userId;
     private Long subscriberId;
     private String status;
     private Date expirationDate;

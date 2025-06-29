@@ -25,8 +25,6 @@ public class Subscriber {
 
     private String email;
 
-    private String subscription;
-
     private String password;
 
     private Date expirationDate;
@@ -39,6 +37,12 @@ public class Subscriber {
 
     @PostPersist
     public void onPostPersist() {
+        SignedUp signedUp = new SignedUp(this);
+        signedUp.publishAfterCommit();
+    }
+
+    @PostUpdate
+    public void onPostUpdate() {
         Verified verified = new Verified(this);
         verified.publishAfterCommit();
     }
@@ -51,11 +55,11 @@ public class Subscriber {
     }
 
     //<<< Clean Arch / Port Method
-    public void joinMembership() {
-        //implement business logic here:
-
-        SignedUp signedUp = new SignedUp(this);
-        signedUp.publishAfterCommit();
+    public static void recommend(RejectSubscribe rejectSubscribe) {
+        repository().findById(rejectSubscribe.getSubscriberId()).ifPresent(subscriber->{
+            subscriber.setIsRecommended(true);
+            repository().save(subscriber);  
+        });
     }
     //>>> Clean Arch / Port Method
 
