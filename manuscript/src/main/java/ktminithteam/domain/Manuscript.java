@@ -1,12 +1,8 @@
 package ktminithteam.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import javax.persistence.*;
+
 import ktminithteam.ManuscriptApplication;
 import ktminithteam.domain.PublishRequestedEvent;
 import lombok.Data;
@@ -14,7 +10,6 @@ import lombok.Data;
 @Entity
 @Table(name = "Manuscript_table")
 @Data
-//<<< DDD / Aggregate Root
 public class Manuscript {
 
     @Id
@@ -31,21 +26,39 @@ public class Manuscript {
 
     private Date updatedAt;
 
-    private BookStatus status;
+    @Enumerated(EnumType.STRING)
+    private BookStatus status; // "DRAFT", "TEMP_SAVE", "FINAL_SAVE", "REQUESTED"
 
-    @PostPersist
-    public void onPostPersist() {
-        PublishRequestedEvent publishRequestedEvent = new PublishRequestedEvent(
-            this
-        );
-        publishRequestedEvent.publishAfterCommit();
+    
+    public void saveTemporarily(String newContent) {
+        this.content = newContent;
+        this.status = BookStatus.TEMP_SAVE;
+        this.updatedAt = new Date();
     }
 
+    
+    public void saveFinal(String finalContent) {
+        this.content = finalContent;
+        this.status = BookStatus.FINAL_SAVE;
+        this.updatedAt = new Date();
+    }
+
+    
+    public void requestPublish() {
+        if (this.status != BookStatus.FINAL_SAVE) {
+            throw new IllegalStateException("최종 저장된 원고만 출간 요청 가능");
+        }
+
+        this.status = BookStatus.REQUESTED;
+        this.updatedAt = new Date();
+
+        PublishRequestedEvent event = new PublishRequestedEvent(this);
+        event.publishAfterCommit(); 
+    }
+
+    
     public static ManuscriptRepository repository() {
-        ManuscriptRepository manuscriptRepository = ManuscriptApplication.applicationContext.getBean(
-            ManuscriptRepository.class
-        );
-        return manuscriptRepository;
+        return ManuscriptApplication.applicationContext.getBean(ManuscriptRepository.class);
     }
 }
-//>>> DDD / Aggregate Root
+

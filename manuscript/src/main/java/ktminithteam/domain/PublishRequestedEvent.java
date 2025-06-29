@@ -1,8 +1,6 @@
 package ktminithteam.domain;
 
-import java.time.LocalDate;
-import java.util.*;
-import ktminithteam.domain.*;
+import java.util.Date;
 import ktminithteam.infra.AbstractEvent;
 import lombok.*;
 
@@ -11,13 +9,17 @@ import lombok.*;
 @ToString
 public class PublishRequestedEvent extends AbstractEvent {
 
-    private Long bookId;
+    private Long manuscriptId;
     private Long authorId;
     private String title;
     private Date requestedAt;
 
     public PublishRequestedEvent(Manuscript aggregate) {
         super(aggregate);
+        this.manuscriptId = aggregate.getManuscriptId();
+        this.authorId = aggregate.getAuthorId();
+        this.title = aggregate.getTitle();
+        this.requestedAt = new Date(); 
     }
 
     public PublishRequestedEvent() {
