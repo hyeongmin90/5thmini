@@ -29,15 +29,17 @@ public class Subscribe {
     private String status;
 
     private Date expirationDate;
+
+    private Long cost;
 /**
 @TODO Cost 내용 넣어야함, 현재 cost 필드 null
 */
-    @PostPersist
-    public void onPostPersist() {
-        this.setStatus("CHECKING");
-        RequestSubscribed requestSubscribed = new RequestSubscribed(this);
-        requestSubscribed.publishAfterCommit();
-    } 
+    // @PostPersist
+    // public void onPostPersist() {
+    //     this.setStatus("CHECKING");
+    //     RequestSubscribed requestSubscribed = new RequestSubscribed(this);
+    //     requestSubscribed.publishAfterCommit();
+    // } 
 
     public static SubscribeRepository repository() {
         SubscribeRepository subscribeRepository = SubscribermanagementApplication.applicationContext.getBean(

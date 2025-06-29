@@ -9,15 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import lombok.RequiredArgsConstructor;
 //<<< Clean Arch / Inbound Adaptor
 
 @RestController
-// @RequestMapping(value="/subscribes")
-@Transactional
+@RequiredArgsConstructor
 public class SubscribeController {
 
-    @Autowired
-    SubscribeRepository subscribeRepository;
+    private final SubscribeService subscribeService;
+
+    @PostMapping("/subscribes")
+    public Subscribe create(@RequestBody Subscribe subscribe) {
+        return subscribeService.createSubscribe(subscribe);
+    }
 }
-//>>> Clean Arch / Inbound Adaptor
