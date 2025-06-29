@@ -12,6 +12,7 @@ public class PublishRequestedEvent extends AbstractEvent {
     private Long manuscriptId;
     private Long authorId;
     private String title;
+    private String content;
     private Date requestedAt;
 
     public PublishRequestedEvent(Manuscript aggregate) {
