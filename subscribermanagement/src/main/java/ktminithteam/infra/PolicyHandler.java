@@ -39,6 +39,7 @@ public class PolicyHandler {
         );
 
         // Sample Logic //
+        Subscriber.recommend(event);
         Subscribe.subscribeFailure(event);
     }
 

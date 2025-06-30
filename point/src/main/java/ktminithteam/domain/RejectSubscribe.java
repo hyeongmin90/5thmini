@@ -1,12 +1,8 @@
 package ktminithteam.domain;
 
-import java.time.LocalDate;
-import java.util.*;
-import ktminithteam.domain.*;
 import ktminithteam.infra.AbstractEvent;
 import lombok.*;
 
-//<<< DDD / Domain Event
 @Data
 @ToString
 public class RejectSubscribe extends AbstractEvent {
@@ -16,10 +12,11 @@ public class RejectSubscribe extends AbstractEvent {
 
     public RejectSubscribe(Point aggregate) {
         super(aggregate);
+        this.id = aggregate.getId();
+        this.subscriberId = aggregate.getSubscriberId();
     }
 
     public RejectSubscribe() {
         super();
     }
 }
-//>>> DDD / Domain Event

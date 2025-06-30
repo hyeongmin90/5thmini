@@ -11,31 +11,33 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SubscribeBookViewHandler {
+public class SubscribeViewHandler {
 
     //<<< DDD / CQRS
     @Autowired
-    private SubscribeBookRepository subscribeBookRepository;
+    private SubscribeRepository subscribeRepository;
 
-    @StreamListener(KafkaProcessor.INPUT)
+    @StreamListener(
+        value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='SubscribeSucceed'"
+    )
     public void whenSubscribeSucceed_then_CREATE_1(
         @Payload SubscribeSucceed subscribeSucceed
     ) {
         try {
             if (!subscribeSucceed.validate()) return;
-
+            System.out.println("whenSubscribeSucceed_then_CREATE_1@@@@@");
             // view 객체 생성
-            SubscribeBook subscribeBook = new SubscribeBook();
+            Subscribe subscribe = new Subscribe();
             // view 객체에 이벤트의 Value 를 set 함
-            subscribeBook.setSubscribeId(
-                String.valueOf(subscribeSucceed.getId())
-            );
-            subscribeBook.setExpriationDate(
+            subscribe.setSubscribeId(subscribeSucceed.getId());
+            subscribe.setSubscriberId(subscribeSucceed.getSubscriberId());
+            subscribe.setPublishId(subscribeSucceed.getPublishId());
+            subscribe.setExpirationDate(
                 subscribeSucceed.getExpirationDate()
             );
-            subscribeBook.setBookId(subscribeSucceed.getBookId());
             // view 레파지 토리에 save
-            subscribeBookRepository.save(subscribeBook);
+            subscribeRepository.save(subscribe);
         } catch (Exception e) {
             e.printStackTrace();
         }

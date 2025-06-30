@@ -11,7 +11,7 @@ import lombok.*;
 @ToString
 public class SignedUp extends AbstractEvent {
 
-    private Long id;
+    private Long subscriberId;
     private String telecom;
 
     public SignedUp(Subscriber aggregate) {
