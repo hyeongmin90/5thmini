@@ -23,10 +23,9 @@ public class SubscribeService {
     public Subscribe createSubscribe(Subscribe subscribe) {
         // 1. 저장
         subscribe.setStatus("CHECKING");
-        subscribeRepository.save(subscribe);
 
         // 2. 외부 정보 채움
-        BookInfo book = bookInfoRepository.findById(subscribe.getId()).orElse(null);
+        BookInfo book = bookInfoRepository.findById(subscribe.getPublishId()).orElse(null);
         if (book != null) {
             subscribe.setCost(book.getCost());
         }
@@ -35,8 +34,6 @@ public class SubscribeService {
 
         RequestSubscribed requestSubscribed = new RequestSubscribed(subscribe);
         requestSubscribed.publishAfterCommit();
-      
-
         return subscribe;
     }
 }

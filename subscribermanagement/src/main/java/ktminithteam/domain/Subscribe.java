@@ -20,7 +20,7 @@ public class Subscribe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long subscribeId;
 
     private Long subscriberId;
 
@@ -47,6 +47,8 @@ public class Subscribe {
         );
         return subscribeRepository;
     }
+
+    
 
     //<<< Clean Arch / Port Method
     public static void subscribeFailure(RejectSubscribe rejectSubscribe) {
