@@ -1,21 +1,15 @@
 package ktminithteam.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import javax.persistence.*;
 import ktminithteam.PointApplication;
-import ktminithteam.domain.RejectSubscribe;
-import ktminithteam.domain.Substart;
+import ktminithteam.infra.AbstractEvent;
 import lombok.Data;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "Point_table")
 @Data
-//<<< DDD / Aggregate Root
 public class Point {
 
     @Id
@@ -23,98 +17,44 @@ public class Point {
     private Long id;
 
     private Long subscriberId;
-
     private Integer point;
+    private Boolean hasSubscriptionTicket;
+    private LocalDate subscriptionTicketExpirationDate;
 
     public static PointRepository repository() {
-        PointRepository pointRepository = PointApplication.applicationContext.getBean(
-            PointRepository.class
-        );
-        return pointRepository;
+        return PointApplication.applicationContext.getBean(PointRepository.class);
     }
 
-    //<<< Clean Arch / Port Method
+    /**
+     * 회원가입 시 포인트 지급
+     */
     public static void 포인트지급(SignedUp signedUp) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
         Point point = new Point();
+        point.setSubscriberId(signedUp.getId());
+        point.setPoint(1000); // 기본 포인트 1000 지급
+        point.setHasSubscriptionTicket(false);
         repository().save(point);
-
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(signedUp.get???()).ifPresent(point->{
-            
-            point // do something
-            repository().save(point);
-
-
-         });
-        */
-
     }
 
-    //>>> Clean Arch / Port Method
-    //<<< Clean Arch / Port Method
-    public static void 포인트지급(Verified verified) {
-        //implement business logic here:
+    /**
+     * 구독 요청 시 포인트 차감 및 구독권 발급 처리
+     */
+    public static void requestSubscribe(RequestSubscribed request) {
+        repository().findBySubscriberId(request.getSubscriberId()).ifPresent(point -> {
+            if (point.getPoint() >= request.getCost()) {
+                point.setPoint((int)(point.getPoint() - request.getCost()));
+                point.setHasSubscriptionTicket(true);
+                point.setSubscriptionTicketExpirationDate(LocalDate.now().plusDays(30));
+                repository().save(point);
 
-        /** Example 1:  new item 
-        Point point = new Point();
-        repository().save(point);
-
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(verified.get???()).ifPresent(point->{
-            
-            point // do something
-            repository().save(point);
-
-
-         });
-        */
-
+                Substart substart = new Substart(point);
+                substart.setExpirationDate(java.sql.Date.valueOf(point.getSubscriptionTicketExpirationDate()));
+                substart.publishAfterCommit();
+            } else {
+                RejectSubscribe reject = new RejectSubscribe(point);
+                reject.publishAfterCommit();
+            }
+        });
     }
-
-    //>>> Clean Arch / Port Method
-    //<<< Clean Arch / Port Method
-    public static void requestSubscribe(RequestSubscribed requestSubscribed) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
-        Point point = new Point();
-        repository().save(point);
-
-        Substart substart = new Substart(point);
-        substart.publishAfterCommit();
-        RejectSubscribe rejectSubscribe = new RejectSubscribe(point);
-        rejectSubscribe.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(requestSubscribed.get???()).ifPresent(point->{
-            
-            point // do something
-            repository().save(point);
-
-            Substart substart = new Substart(point);
-            substart.publishAfterCommit();
-            RejectSubscribe rejectSubscribe = new RejectSubscribe(point);
-            rejectSubscribe.publishAfterCommit();
-
-         });
-        */
-
-    }
-    //>>> Clean Arch / Port Method
-
 }
-//>>> DDD / Aggregate Root
+

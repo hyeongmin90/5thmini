@@ -1,25 +1,26 @@
 package ktminithteam.domain;
 
-import java.time.LocalDate;
-import java.util.*;
-import ktminithteam.domain.*;
 import ktminithteam.infra.AbstractEvent;
 import lombok.*;
 
-//<<< DDD / Domain Event
+import java.util.Date;
+
 @Data
 @ToString
 public class Substart extends AbstractEvent {
 
     private Long id;
     private Long subscriberId;
+    private Date expirationDate;
 
     public Substart(Point aggregate) {
         super(aggregate);
+        this.id = aggregate.getId();
+        this.subscriberId = aggregate.getSubscriberId();
     }
 
     public Substart() {
         super();
     }
 }
-//>>> DDD / Domain Event
+
