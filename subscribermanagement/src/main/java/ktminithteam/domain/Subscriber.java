@@ -19,17 +19,13 @@ public class Subscriber {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long subscriberId;
 
     private String name;
 
     private String email;
 
-    private String subscription;
-
     private String password;
-
-    private Date expirationDate;
 
     private String telecom;
 
@@ -37,10 +33,11 @@ public class Subscriber {
 
     private Boolean isRecommended;
 
+    // 엔티티 생성시 이벤트 발행
     @PostPersist
     public void onPostPersist() {
-        Verified verified = new Verified(this);
-        verified.publishAfterCommit();
+        SignedUp signedUp = new SignedUp(this);
+        signedUp.publishAfterCommit();
     }
 
     public static SubscriberRepository repository() {
@@ -53,11 +50,18 @@ public class Subscriber {
     //<<< Clean Arch / Port Method
     public void joinMembership() {
         //implement business logic here:
-
+        // 구독자 생성 로직
         SignedUp signedUp = new SignedUp(this);
         signedUp.publishAfterCommit();
     }
     //>>> Clean Arch / Port Method
+
+    public static void recommend(RejectSubscribe rejectSubscribe) {
+        Long subId = rejectSubscribe.getSubscriberId();
+        Subscriber sub = repository().findById(subId).orElse(null);
+        sub.setIsRecommended(true);
+        repository().save(sub);
+    }
 
 }
 //>>> DDD / Aggregate Root
