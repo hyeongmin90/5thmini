@@ -1,6 +1,6 @@
 package ktminithteam.domain;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import ktminithteam.PointApplication;
 import ktminithteam.infra.AbstractEvent;
 import lombok.Data;
@@ -42,7 +42,7 @@ public class Point {
     public static void requestSubscribe(RequestSubscribed request) {
         repository().findBySubscriberId(request.getSubscriberId()).ifPresent(point -> {
             if (point.getPoint() >= request.getCost()) {
-                point.setPoint(point.getPoint() - request.getCost());
+                point.setPoint((int)(point.getPoint() - request.getCost()));
                 point.setHasSubscriptionTicket(true);
                 point.setSubscriptionTicketExpirationDate(LocalDate.now().plusDays(30));
                 repository().save(point);

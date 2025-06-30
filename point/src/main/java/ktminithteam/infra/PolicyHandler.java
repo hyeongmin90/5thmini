@@ -1,6 +1,6 @@
 package ktminithteam.infra;
 
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import ktminithteam.config.kafka.KafkaProcessor;
 import ktminithteam.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
