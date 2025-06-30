@@ -10,6 +10,8 @@ import javax.persistence.*;
 import ktminithteam.SubscribermanagementApplication;
 import ktminithteam.domain.RequestSubscribed;
 import ktminithteam.domain.SubscribeSucceed;
+import ktminithteam.infra.ApplicationContextProvider;
+import ktminithteam.infra.BookInfoRepository;
 import lombok.Data;
 
 @Entity
@@ -32,14 +34,27 @@ public class Subscribe {
 
     private Long cost;
 /**
-@TODO Cost 내용 넣어야함, 현재 cost 필드 null
+@done cost를 bookinfo에서 가져와 카프카 필드에 채움
+response에는 반영 안되어 확인 불가  -> 카프카 이벤트에서 확인
 */
-    // @PostPersist
-    // public void onPostPersist() {
-    //     this.setStatus("CHECKING");
-    //     RequestSubscribed requestSubscribed = new RequestSubscribed(this);
-    //     requestSubscribed.publishAfterCommit();
-    // } 
+    @PostPersist
+    public void onPostPersist() {
+        this.setStatus("CHECKING"); //db에는 반영 안됨 -> 메시지 큐에서 확인용
+        
+        // BookInfoRepository 가져오기
+        BookInfoRepository bookInfoRepository = ApplicationContextProvider
+            .getApplicationContext()
+            .getBean(BookInfoRepository.class);
+
+        BookInfo book = bookInfoRepository.findById(this.getPublishId()).orElse(null);
+
+        RequestSubscribed requestSubscribed = new RequestSubscribed(this);
+
+        if (book != null)
+            requestSubscribed.setCost(book.getCost());
+    
+        requestSubscribed.publishAfterCommit();
+    } 
 
     public static SubscribeRepository repository() {
         SubscribeRepository subscribeRepository = SubscribermanagementApplication.applicationContext.getBean(
