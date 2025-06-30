@@ -19,5 +19,26 @@ public class AuthorController {
 
     @Autowired
     AuthorRepository authorRepository;
+
+    @PostMapping
+    public Author registerAuthor(@RequestBody Author author) {
+        author.setCreatedAt(new java.util.Date());
+        author.setIsAccept(null);
+        return authorRepository.save(author);
+    }
+
+    @PatchMapping("/{id}/accept")
+    public Author acceptAuthor(@PathVariable Long id) {
+        Author author = authorRepository.findById(id).orElseThrow();
+        author.setIsAccept(true);
+        return authorRepository.save(author);
+    }
+
+    @PatchMapping("/{id}/reject")
+    public Author rejectAuthor(@PathVariable Long id) {
+        Author author = authorRepository.findById(id).orElseThrow();
+        author.setIsAccept(false);
+        return authorRepository.save(author);
+    }
 }
 //>>> Clean Arch / Inbound Adaptor
