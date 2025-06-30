@@ -1,10 +1,13 @@
 package ktminithteam.infra;
 import ktminithteam.domain.*;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,22 +17,45 @@ import javax.transaction.Transactional;
 //<<< Clean Arch / Inbound Adaptor
 
 @RestController
-// @RequestMapping(value="/subscribers")
+@RequestMapping(value="/subscribers")
 @Transactional
 public class SubscriberController {
     @Autowired
     SubscriberRepository subscriberRepository;
 
-    @RequestMapping(value = "/subscribers/joinmembership",
-            method = RequestMethod.POST,
-            produces = "application/json;charset=UTF-8")
-    public Subscriber joinMembership(HttpServletRequest request, HttpServletResponse response
-        ) throws Exception {
+    // 회원 가입 커맨드
+    @PostMapping("/joinmembership")
+    public ResponseEntity<Subscriber> joinMembership(@RequestBody Subscriber subscriber) throws Exception {
             System.out.println("##### /subscriber/joinMembership  called #####");
-            Subscriber subscriber = new Subscriber();
-            subscriber.joinMembership();
+            String email = subscriber.getEmail();
+            if (subscriberRepository.findByEmail(email).isPresent()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
             subscriberRepository.save(subscriber);
-            return subscriber;
+            return ResponseEntity.ok(subscriber);
+    }
+
+    // kt 인증 커맨드
+    @PatchMapping("/{subscriberId}/kt-auth")
+    public ResponseEntity<Subscriber> ktAuth(
+            @PathVariable Long subscriberId,
+            @RequestBody Map<String, String> body) {
+
+        String phoneNumber = body.get("phoneNumber"); // 요청에서 phonenumber 추출
+
+        Subscriber subscriber = subscriberRepository.findById(subscriberId).orElse(null);
+
+        // KT가 아닌 경우만 허용
+        if ("KT".equalsIgnoreCase(subscriber.getTelecom())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        subscriber.setTelecom("KT");
+        subscriber.setPhoneNumber(phoneNumber);
+        subscriberRepository.save(subscriber);
+        Verified verified = new Verified(subscriber);
+        verified.publishAfterCommit();
+        return ResponseEntity.ok(subscriber);
     }
 }
 //>>> Clean Arch / Inbound Adaptor

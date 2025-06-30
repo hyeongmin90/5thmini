@@ -19,7 +19,7 @@ public class Subscriber {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long subscriberId;
 
     private String name;
 
@@ -33,10 +33,11 @@ public class Subscriber {
 
     private Boolean isRecommended;
 
+    // 엔티티 생성시 이벤트 발행
     @PostPersist
     public void onPostPersist() {
-        Verified verified = new Verified(this);
-        verified.publishAfterCommit();
+        SignedUp signedUp = new SignedUp(this);
+        signedUp.publishAfterCommit();
     }
 
     public static SubscriberRepository repository() {
@@ -49,7 +50,7 @@ public class Subscriber {
     //<<< Clean Arch / Port Method
     public void joinMembership() {
         //implement business logic here:
-
+        // 구독자 생성 로직
         SignedUp signedUp = new SignedUp(this);
         signedUp.publishAfterCommit();
     }
