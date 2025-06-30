@@ -18,20 +18,25 @@ public class JoinMembership {  // JoinMembershipCommand -> JoinMembership으로 
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String username;                    // 고유 식별 로그인 아이디(협의필요) & 회원식별 방법 어떻게? 모름
-
-    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
+    @Column
     private String name;                        // 실명 : 중복 허용
+
+    @Column(nullable = false)
+    private String phoneNumber;
+
+    @Column(nullable = false)
+    private String telecom;
+
+    @Column(nullable = false)
+    private boolean isRecommended;
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "member_roles")
-    private Set<Role> roles = new HashSet<>();
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private boolean enabled = true;
@@ -40,20 +45,17 @@ public class JoinMembership {  // JoinMembershipCommand -> JoinMembership으로 
     public JoinMembership() {}
 
     // 생성자
-    public JoinMembership(String username, String email, String password, String name) {
-        this.username = username; //
+    public JoinMembership(String username, String email, String password, String name, String phoneNumber, String telecom) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.roles.add(Role.USER); // 기본 역할
+        this.phoneNumber = phoneNumber;
+        this.telecom = telecom;
     }
 
     // Getter/Setter
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
@@ -64,30 +66,36 @@ public class JoinMembership {  // JoinMembershipCommand -> JoinMembership으로 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public Set<Role> getRoles() { return roles; }
-    public void setRoles(Set<Role> roles) { this.roles = roles; }
-
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     public boolean isEnabled() { return enabled; }
     public void setEnabled(boolean enabled) { this.enabled = enabled; }
 
-    public enum Role {
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
-        USER("일반 사용자"),
-        AUTHOR("작가"),
-        ADMIN("관리자"),
-        SUBSCRIBER("구독자");
+    public String getTelecom() { return telecom; }
+    public void setTelecom(String telecom) { this.telecom = telecom; }
 
-        private final String description;
+    public boolean isRecommended() { return isRecommended; }
+    public void setRecommended(boolean recommended) { isRecommended = recommended; }
 
-        Role(String description) {
-            this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-    }
+//    public enum Role {
+//
+//        USER("일반 사용자"),
+//        AUTHOR("작가"),
+//        ADMIN("관리자"),
+//        SUBSCRIBER("구독자");
+//
+//        private final String description;
+//
+//        Role(String description) {
+//            this.description = description;
+//        }
+//
+//        public String getDescription() {
+//            return description;
+//        }
+//    }
 }

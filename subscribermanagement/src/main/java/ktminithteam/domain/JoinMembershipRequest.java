@@ -6,10 +6,6 @@ import javax.validation.constraints.Size;
 
 public class JoinMembershipRequest {
 
-    @NotBlank(message = "사용자명은 필수입니다.")
-    @Size(min = 3, max = 20, message = "사용자명은 3-20자 사이여야 합니다.")
-    private String username;
-
     @NotBlank(message = "이메일은 필수입니다.")
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     private String email;
@@ -24,9 +20,6 @@ public class JoinMembershipRequest {
 
     public JoinMembershipRequest() {}
 
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
