@@ -11,11 +11,10 @@ import lombok.*;
 @ToString
 public class SubscribeSucceed extends AbstractEvent {
 
-    private Long id;
+    private Long subscribeId;
     private Long subscriberId;
     private Date expirationDate;
-    private Long bookId;
-    private String status;
+    private Long publishId;
 
     public SubscribeSucceed(Subscribe aggregate) {
         super(aggregate);

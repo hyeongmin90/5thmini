@@ -45,6 +45,22 @@ public class PolicyHandler {
 
     @StreamListener(
         value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='RejectSubscribe'"
+    )
+    public void wheneverRejectSubscribe_Recommend(
+        @Payload RejectSubscribe rejectSubscribe
+    ) {
+        RejectSubscribe event = rejectSubscribe;
+        System.out.println(
+            "\n\n##### listener Recommend : " + rejectSubscribe + "\n\n"
+        );
+
+        // Sample Logic //
+        Subscriber.recommend(event);
+    }
+
+    @StreamListener(
+        value = KafkaProcessor.INPUT,
         condition = "headers['type']=='Substart'"
     )
     public void wheneverSubstart_SubscribeSuccess(@Payload Substart substart) {

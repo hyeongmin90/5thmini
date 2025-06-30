@@ -1,5 +1,4 @@
 package ktminithteam.infra;
-import ktminithteam.domain.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
@@ -9,10 +8,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.Optional;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import ktminithteam.domain.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 //<<< Clean Arch / Inbound Adaptor
 
@@ -20,9 +23,9 @@ import javax.transaction.Transactional;
 @RequestMapping(value="/subscribers")
 @Transactional
 public class SubscriberController {
+
     @Autowired
     SubscriberRepository subscriberRepository;
-
     // 회원 가입 커맨드
     @PostMapping("/joinmembership")
     public ResponseEntity<Subscriber> joinMembership(@RequestBody Subscriber subscriber) throws Exception {

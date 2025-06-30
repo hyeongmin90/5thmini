@@ -11,12 +11,9 @@ import lombok.*;
 @ToString
 public class RequestSubscribed extends AbstractEvent {
 
-    private Long id;
-    private Long bookId;
-    private Long userId;
+    private Long subscribeId;
     private Long subscriberId;
-    private String status;
-    private Date expirationDate;
+    private Long publishId;
     private Long cost;
 
     public RequestSubscribed(Subscribe aggregate) {
