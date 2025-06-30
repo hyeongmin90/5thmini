@@ -13,28 +13,27 @@ import org.springframework.web.bind.annotation.RestController;
 //<<< Clean Arch / Inbound Adaptor
 
 @RestController
-// @RequestMapping(value="/authors")
 @Transactional
 public class AuthorController {
 
     @Autowired
     AuthorRepository authorRepository;
 
-    @PostMapping
+    @PostMapping("/authors")
     public Author registerAuthor(@RequestBody Author author) {
         author.setCreatedAt(new java.util.Date());
         author.setIsAccept(null);
         return authorRepository.save(author);
     }
 
-    @PatchMapping("/{id}/accept")
+    @PatchMapping("/authors/{id}/accept")
     public Author acceptAuthor(@PathVariable Long id) {
         Author author = authorRepository.findById(id).orElseThrow();
         author.setIsAccept(true);
         return authorRepository.save(author);
     }
 
-    @PatchMapping("/{id}/reject")
+    @PatchMapping("/authors/{id}/reject")
     public Author rejectAuthor(@PathVariable Long id) {
         Author author = authorRepository.findById(id).orElseThrow();
         author.setIsAccept(false);
