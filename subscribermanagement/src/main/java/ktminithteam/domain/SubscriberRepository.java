@@ -15,4 +15,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface SubscriberRepository
     extends PagingAndSortingRepository<Subscriber, Long> {
 
-    Optional<Subscriber> findByEmail(String email);}
+    Optional<Subscriber> findByEmail(String email);
+
+    Optional<Subscriber> findByEmailAndPassword(String email, String password);}
