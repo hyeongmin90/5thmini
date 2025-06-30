@@ -1,6 +1,7 @@
 package ktminithteam.infra;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import javax.transaction.Transactional;
 
@@ -57,6 +58,21 @@ public class ManuscriptController {
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    // 작가별 원고 조회 API (작가 ID는 필수 파라미터)
+    @GetMapping
+    public List<Manuscript> getManuscripts(@RequestParam Long authorId) {
+        return manuscriptRepository.findByAuthorId(authorId);
+    }
+
+    // 원고 단일 조회 API (명확한 리턴 타입 지정)
+    @GetMapping("/{manuscriptId}")
+    public ResponseEntity<Manuscript> getManuscriptById(@PathVariable Long manuscriptId) {
+        Manuscript manuscript = manuscriptRepository.findById(manuscriptId)
+                .orElseThrow(() -> new RuntimeException("원고를 찾을 수 없습니다."));
+
+        return ResponseEntity.ok(manuscript);
     }
 }
 //>>> Clean Arch / Inbound Adaptor
