@@ -39,5 +39,11 @@ public class AuthorController {
         author.setIsAccept(false);
         return authorRepository.save(author);
     }
+
+    // 모든 저자 목록 조회
+    @GetMapping("/authors")
+    public Iterable<Author> getAuthors() {
+        return authorRepository.findAll();
+    }
 }
 //>>> Clean Arch / Inbound Adaptor
