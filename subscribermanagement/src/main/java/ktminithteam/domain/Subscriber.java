@@ -25,11 +25,7 @@ public class Subscriber {
 
     private String email;
 
-    private String subscription;
-
     private String password;
-
-    private Date expirationDate;
 
     private String telecom;
 
@@ -58,6 +54,13 @@ public class Subscriber {
         signedUp.publishAfterCommit();
     }
     //>>> Clean Arch / Port Method
+
+    public static void recommend(RejectSubscribe rejectSubscribe) {
+        Long subId = rejectSubscribe.getSubscriberId();
+        Subscriber sub = repository().findById(subId).orElse(null);
+        sub.setIsRecommended(true);
+        repository().save(sub);
+    }
 
 }
 //>>> DDD / Aggregate Root
