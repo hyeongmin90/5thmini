@@ -30,7 +30,7 @@ public class Subscribe {
 
     private String status;
 
-    private Date expirationDate;
+    private LocalDate expirationDate;
 
     private Long cost;
 /**
@@ -67,7 +67,7 @@ response에는 반영 안되어 확인 불가  -> 카프카 이벤트에서 확�
 
     //<<< Clean Arch / Port Method
     public static void subscribeFailure(RejectSubscribe rejectSubscribe) {
-        repository().findById(rejectSubscribe.getId()).ifPresent(subscribe->{
+        repository().findById(rejectSubscribe.getSubscribeId()).ifPresent(subscribe->{
             subscribe.setStatus("FAILURE");
             repository().save(subscribe);
         });
@@ -76,10 +76,13 @@ response에는 반영 안되어 확인 불가  -> 카프카 이벤트에서 확�
     //>>> Clean Arch / Port Method
     //<<< Clean Arch / Port Method
     public static void subscribeSuccess(Substart substart) {
-        repository().findById(substart.getId()).ifPresent(subscribe->{
+        repository().findById(substart.getSubscribeId()).ifPresent(subscribe->{
+
             subscribe.setStatus("SUCCESS");
-            if (substart.getSubscriptionTicketExpirationDate() != null)
-                subscribe.setExpirationDate(substart.getSubscriptionTicketExpirationDate());
+            subscribe.setExpirationDate(substart.getExpirationDate());
+
+            if (substart.getExpirationDate() != null)
+                subscribe.setExpirationDate(substart.getExpirationDate());
             repository().save(subscribe);
         });
     }

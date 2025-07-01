@@ -8,12 +8,12 @@ import lombok.*;
 public class RejectSubscribe extends AbstractEvent {
 
     private Long id;
+    private Long subscribeId;
     private Long subscriberId;
 
-    public RejectSubscribe(Point aggregate) {
+    public RejectSubscribe(Point aggregate, Long subscribeId) {
         super(aggregate);
-        this.id = aggregate.getId();
-        this.subscriberId = aggregate.getSubscriberId();
+        this.subscribeId = subscribeId;
     }
 
     public RejectSubscribe() {

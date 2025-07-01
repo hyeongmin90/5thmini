@@ -55,22 +55,32 @@ public class Point {
 
 
     /**
+     * @TODO 
+     * 구독권을 가지고 있다면 포인트 소모 않고 구독권의 만료일을 넣어서 보내기
+     * request의 id로 이벤트 발행하기 현재는 포인트 테이블의 id를 보내고 있음
+     * 
      * 구독 요청 시 포인트 차감 및 구독권 발급 처리
      * -> 로직 변경 도서 구독과 구독권은 별개로 설정
      */
     public static void requestSubscribe(RequestSubscribed request) {
         repository().findBySubscriberId(request.getSubscriberId()).ifPresent(point -> {
-            if (point.getPoint() >= request.getCost()) {
+            if(point.hasSubscriptionTicket){
+                Substart substart = new Substart(point, request.getSubscribeId());
+                substart.setExpirationDate(point.getSubscriptionTicketExpirationDate());
+                substart.publishAfterCommit();
+            }
+            else if (point.getPoint() >= request.getCost()) {
                 point.setPoint((int)(point.getPoint() - request.getCost()));
                 // point.setHasSubscriptionTicket(true);
                 // point.setSubscriptionTicketExpirationDate(LocalDate.now().plusDays(30));
                 repository().save(point);
 
-                Substart substart = new Substart(point);
+                Substart substart = new Substart(point, request.getSubscribeId());
+
                 // substart.setExpirationDate(java.sql.Date.valueOf(point.getSubscriptionTicketExpirationDate()));
                 substart.publishAfterCommit();
             } else {
-                RejectSubscribe reject = new RejectSubscribe(point);
+                RejectSubscribe reject = new RejectSubscribe(point, request.getSubscribeId());
                 reject.publishAfterCommit();
             }
         });

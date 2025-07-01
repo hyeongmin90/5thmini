@@ -10,5 +10,6 @@ import lombok.*;
 public class RejectSubscribe extends AbstractEvent {
 
     private Long id;
+    private Long subscribeId;
     private Long subscriberId;
 }
