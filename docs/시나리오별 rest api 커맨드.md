@@ -178,3 +178,29 @@ cd /bin
         ```
         
     - 수동으로 `PublishRequestedEvent` 이벤트 발행
+
+- 작가 출간 목록(작가)
+  - http GET localhost:8082/publishes?authorId=1
+
+- 출간 재요청(작가)
+  - http POST localhost:8082/publishes/{id}/retry
+
+- 출간 확정(작가)
+  - http PATCH localhost:8082/publishes/{id}/confirm
+  - event
+  ```json
+  {
+    "eventType":"BookPublished",
+    "timestamp":1751348164056,
+    "publishId":1,
+    "manuscriptId":2,
+    "title":"test manuscript",
+    "content":"save-final content",
+    "summaryUrl":"- 최종 콘텐츠 저장\n- 완성된 콘텐츠 보관\n- 최종 버전 유지",
+    "coverUrl":"https://oaidalleapiprodscus.blob.core.windows.net/private/org-Dm26yx9HwJf0UwvmLDm571SQ/user-mP6IHNB5vK15VgtEbAfVhHVW/img-nYndwPSLS63tevTYaUBlgXuI.png?st=2025-07-01T04%3A33%3A27Z&se=2025-07-01T06%3A33%3A27Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=cc612491-d948-4d2e-9821-2683df3719f5&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-06-30T19%3A41%3A10Z&ske=2025-07-01T19%3A41%3A10Z&sks=b&skv=2024-08-04&sig=2pfORxY3GTk8VSqaIRzbGBJslisvaE4YP33hQtIYB5I%3D",
+    "category":"정리",
+    "cost":800,
+    "isAccept":true,
+    "createdAt":"2025-07-01T05:36:04.055+00:00"
+  }
+  ```
