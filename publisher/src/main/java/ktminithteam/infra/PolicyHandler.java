@@ -1,9 +1,5 @@
 package ktminithteam.infra;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.naming.NameParser;
-import javax.naming.NameParser;
 import javax.transaction.Transactional;
 import ktminithteam.config.kafka.KafkaProcessor;
 import ktminithteam.domain.*;
@@ -12,13 +8,17 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-//<<< Clean Arch / Inbound Adaptor
+import java.util.Date;
+
 @Service
 @Transactional
 public class PolicyHandler {
 
     @Autowired
     PublishRepository publishRepository;
+
+    @Autowired
+    OpenAIApiClient aiClient;
 
     @StreamListener(KafkaProcessor.INPUT)
     public void whatever(@Payload String eventString) {}
@@ -28,17 +28,29 @@ public class PolicyHandler {
         condition = "headers['type']=='PublishRequestedEvent'"
     )
     public void wheneverPublishRequestedEvent_PublishProcess(
-        @Payload PublishRequestedEvent publishRequestedEvent
+        @Payload PublishRequestedEvent event
     ) {
-        PublishRequestedEvent event = publishRequestedEvent;
-        System.out.println(
-            "\n\n##### listener PublishProcess : " +
-            publishRequestedEvent +
-            "\n\n"
-        );
+        System.out.println("\n\n##### listener PublishProcess : " + event + "\n\n");
 
-        // Sample Logic //
-        Publish.publishProcess(event);
+        Publish publish = Publish.publishProcess(event);
+
+        try {
+            String summary = aiClient.generateSummary(event.getContent());
+            String category = aiClient.classifyCategory(event.getContent());
+            String coverUrl = aiClient.generateCover(event.getTitle());
+
+            publish.applyAiResult(summary, coverUrl, category);
+
+            long cost = 500 + (event.getContent().length() / 100 * 10);
+            if (summary != null) cost += 100;
+            if (coverUrl != null) cost += 200;
+
+            publish.setCost(cost);
+        } catch (Exception e) {
+            System.out.println("⚠️ AI 호출 실패: " + e.getMessage());
+            // AI 실패 시 fallback 로직 추가 가능
+        }
+
+        publishRepository.save(publish);
     }
 }
-//>>> Clean Arch / Inbound Adaptor

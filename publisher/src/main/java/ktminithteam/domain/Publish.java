@@ -20,15 +20,25 @@ public class Publish {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long publishId;
-    private Long bookId;
+
+    private Long manuscriptId;
     private Boolean isAccept;
+
     private String summaryUrl;
+
     private String coverUrl;
+
     private String content;
+
     private Date createdAt;
+
     private String category;
+
     private Long cost;
+
     private String title;
+
+    private Long authorId;
 
     public void confirm() {
         this.isAccept = true;
@@ -45,42 +55,18 @@ public class Publish {
         return publishRepository;
     }
 
-    //<<< Clean Arch / Port Method
-    public static void publishProcess(PublishRequestedEvent event) {
+    public static Publish publishProcess(PublishRequestedEvent event) {
         Publish publish = new Publish();
-        publish.setBookId(event.getBookId());
-        publish.setIsAccept(false);
+        publish.setManuscriptId(event.getManuscriptId());
+        publish.setAuthorId(event.getAuthorId());
         publish.setTitle(event.getTitle());
         publish.setContent(event.getContent());
+        publish.setCreatedAt(new Date());
+        publish.setIsAccept(false);
 
-        //AI 반영 전이므로 null 세팅
-        publish.setSummaryUrl(null);
-        publish.setCoverUrl(null);
-        publish.setCategory(null);  
-        publish.setCost(null);
-
-        repository().save(publish);
-        //implement business logic here:
-
-        /** Example 1:  new item 
-        Publish publish = new Publish();
-        repository().save(publish);
-
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(publishRequestedEvent.get???()).ifPresent(publish->{
-            
-            publish // do something
-            repository().save(publish);
-
-
-         });
-        */
-
+        return repository().save(publish);
     }
+
     public void applyAiResult(String summaryUrl, String coverUrl, String category) {
         this.summaryUrl = summaryUrl;
         this.coverUrl = coverUrl;

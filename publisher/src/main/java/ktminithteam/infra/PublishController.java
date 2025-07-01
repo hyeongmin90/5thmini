@@ -2,24 +2,24 @@ package ktminithteam.infra;
 
 import java.util.*;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import ktminithteam.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-//<<< Clean Arch / Inbound Adaptor
 
 @RestController
-// @RequestMapping(value="/publishes")
+@RequestMapping("/publishes")
 @Transactional
 public class PublishController {
 
     @Autowired
     PublishRepository publishRepository;
+
+    @Autowired
+    PublishService publishService;
+
+    @Autowired
+    OpenAIApiClient aiClient;
 
     @PutMapping("/publish/{id}/confirm")
     public void confirmPublish(@PathVariable Long id) {
@@ -42,28 +42,27 @@ public class PublishController {
         return publishRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("출간 정보를 찾을 수 없습니다"));
     }
-    @PostMapping("/publish/request-test") //출간 요청 직접 테스트용
-    public void requestPublishTest(@RequestBody Publish dummy) {
-        PublishRequestedEvent event = new PublishRequestedEvent();
-        event.setTitle(dummy.getTitle());
-        event.setContent(dummy.getContent());
-        event.setBookId(dummy.getBookId());
-        //event.setCategory(dummy.getCategory());
 
-        event.publish(); // 이벤트 수동 발행
-    }
+    // 출간 재수행 API
+    @PostMapping("/{id}/retry")
+    public String retryPublish(@PathVariable Long id) {
+        Optional<Publish> optional = publishRepository.findById(id);
+        if (optional.isPresent()) {
+            Publish publish = optional.get();
 
-    @Autowired
-    PublishService publishService;
+            String summary = aiClient.generateSummary(event.getContent());
+            String category = aiClient.classifyCategory(event.getContent());
+            String coverUrl = aiClient.generateCover(event.getTitle());
 
-    @PostMapping("/publish/{id}/ai-result")
-    public void applyAiResult(@PathVariable Long id, @RequestBody AiResultRequest request) {
-        publishService.handleAiResults(
-            id,
-            request.getSummaryUrl(),
-            request.getCoverUrl(),
-            request.getCategory()
-        );
+            publish.setSummaryUrl(summary);
+            publish.setCoverUrl(category);
+            publish.setCategory(coverUrl);
+
+            publishRepository.save(publish);
+            return "출간 정보가 재생성되었습니다.";
+        } else {
+            return "해당 출간 정보를 찾을 수 없습니다.";
+        }
     }
 }
 //>>> Clean Arch / Inbound Adaptor
