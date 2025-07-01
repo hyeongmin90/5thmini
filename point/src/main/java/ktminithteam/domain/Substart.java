@@ -4,19 +4,20 @@ import ktminithteam.infra.AbstractEvent;
 import lombok.*;
 
 import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @ToString
 public class Substart extends AbstractEvent {
 
     private Long id;
+    private Long subscribeId;
     private Long subscriberId;
-    private Date expirationDate;
+    private LocalDate expirationDate;
 
-    public Substart(Point aggregate) {
+    public Substart(Point aggregate, Long subscribeId) {
         super(aggregate);
-        this.id = aggregate.getId();
-        this.subscriberId = aggregate.getSubscriberId();
+        this.subscribeId = subscribeId;
     }
 
     public Substart() {

@@ -22,9 +22,23 @@ public class PolicyHandler {
      * [회원가입 이벤트] → 포인트 지급
      */
     @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='SignedUp'")
-    public void wheneverSignedUp_포인트지급(@Payload SignedUp signedUp) {
-        System.out.println("\n\n##### listener 포인트지급 : " + signedUp + "\n\n");
-        Point.포인트지급(signedUp);
+    public void wheneverSignedUp_SignedUp(@Payload SignedUp signedUp) {
+        System.out.println("\n\n##### listener pointIncrease : " + signedUp + "\n\n");
+        Point.pointIncrease(signedUp);
+    }
+
+     /**
+     * [KT 인증됨 이벤트] KT 회원 인증시 포인트 추가 지급
+     */
+    @StreamListener(
+        value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='Verified'"
+    )
+    public void wheneverVerified_Verified(@Payload Verified verified) {
+        Verified event = verified;
+        System.out.println("\n\n##### listener Verified : " + verified + "\n\n");
+
+        Point.pointIncrease_verified(event);
     }
 
     /**

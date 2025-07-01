@@ -40,12 +40,6 @@ public class Subscriber {
         signedUp.publishAfterCommit();
     }
 
-    @PostUpdate
-    public void onPostUpdate() {
-        Verified verified = new Verified(this);
-        verified.publishAfterCommit();
-
-    }
 
     public static SubscriberRepository repository() {
         SubscriberRepository subscriberRepository = SubscribermanagementApplication.applicationContext.getBean(

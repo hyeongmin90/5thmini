@@ -9,6 +9,6 @@ import lombok.*;
 @ToString
 public class Verified extends AbstractEvent {
 
-    private Long id;
+    private Long subscriberId;
     private String telecom;
 }
