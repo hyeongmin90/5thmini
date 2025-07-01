@@ -78,7 +78,7 @@ cd /bin
   }
   ```
 - 구독 신청(구독자)
-  - http POST localhost:8082/subscriptions subscriberId=1 manuscriptId=1
+  - http POST localhost:8082/subscribes subscriberId=1 publishId=1
   - event
   ```json
   {
