@@ -90,4 +90,92 @@ cd /bin
     "cost":null
   }
   ```
-- 
+
+## Publisher
+
+---
+
+- **출간 요청 이벤트 수신 (내부)**
+    - Kafka 이벤트: `PublishRequestedEvent`
+    - event
+        
+        ```json
+        {
+          "eventType": "PublishRequestedEvent",
+          "timestamp": 1751309009238,
+          "bookId": 1,
+          "authorId": 1,
+          "title": "test manuscript",
+          "content": "save-final content",
+          "requestedAt": "2025-06-30T18:43:29.240+00:00"
+        }
+        ```
+        
+    - 이벤트 수신 시 `Publish` 도메인에 저장 (초기 상태: `isAccept=false`)
+- **AI 결과 반영 (AI 자동화 서비스)**
+    - HTTP API:
+        
+        `POST localhost:8086/publish/{id}/ai-result`
+        
+    - 요청 Body 예시:
+        
+        ```json
+        {
+          "summaryUrl": "https://s3.bucket/summary.pdf",
+          "coverUrl": "https://s3.bucket/cover.jpg",
+          "category": "소설"
+        }
+        ```
+        
+    - 해당 출간 데이터에 AI가 생성한 요약, 표지, 카테고리 정보 반영
+- **출간 확정 (관리자)**
+    - HTTP API:
+        
+        `PUT localhost:8086/publish/{id}/confirm`  
+        
+    - 출간 확정 처리 후 Kafka 이벤트 `PublishedEvent` 발행
+    - `PublishedEvent`
+        
+        ```json
+        {
+          "eventType": "PublishedEvent",
+          "timestamp": 1751310000000,
+          "publishId": 1,
+          "bookId": 1,
+          "isAccept": true,
+          "summaryUrl": "https://s3.bucket/summary.pdf",
+          "coverUrl": "https://s3.bucket/cover.jpg",
+          "content": "save-final content",
+          "category": "소설",
+          "cost": 10000,
+          "title": "test manuscript",
+          "createdAt": "2025-06-30T19:00:00.000+00:00"
+        }
+        ```
+        
+- **출간 전체 목록 조회 (관리자)**
+    - HTTP API:
+        
+        `GET localhost:8086/publish`
+        
+- **출간 상세 조회 (관리자)**
+    - HTTP API:
+        
+        `GET localhost:8086/publish/{id}`
+        
+- **출간 요청 수동 테스트 (개발자)**
+    - HTTP API:
+        
+        `POST localhost:8086/publish/request-test`
+        
+    - 요청 Body 예시:
+        
+        ```json
+        {
+          "title": "dummy title",
+          "content": "dummy content",
+          "bookId": 1
+        }
+        ```
+        
+    - 수동으로 `PublishRequestedEvent` 이벤트 발행
