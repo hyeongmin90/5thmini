@@ -93,8 +93,6 @@ cd /bin
 
 ## Publisher
 
----
-
 - **출간 요청 이벤트 수신 (내부)**
     - Kafka 이벤트: `PublishRequestedEvent`
     - event
