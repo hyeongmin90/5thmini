@@ -90,6 +90,11 @@ cd /bin
     "cost":null
   }
   ```
+## Point
+
+- 구독권 구매(구독자)
+  - http localhost:8085/points/purchase subscriberId=1
+  
 
 ## Publisher
 
