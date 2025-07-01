@@ -75,11 +75,5 @@ public class Point {
             }
         });
     }
-    /**
-     * 구독권(티켓) 구매
-     */
-    public static void purchaseTicket(){
-
-    }
 }
 

@@ -6,6 +6,7 @@ import ktminithteam.domain.PointRepository;
 import ktminithteam.domain.PurchaseTicket;
 import ktminithteam.domain.Point;
 import java.util.Optional;
+import java.time.LocalDate;
 
 @Service
 @Transactional
@@ -26,7 +27,8 @@ public class PointService {
 
             // 구독 상태 업데이트
             subscriber.setHasSubscriptionTicket(true);
-
+            subscriber.setHasSubscriptionTicket(true);
+            subscriber.setSubscriptionTicketExpirationDate(LocalDate.now().plusDays(30));
             // 변경사항 저장
             pointRepository.save(subscriber);
         } else {
