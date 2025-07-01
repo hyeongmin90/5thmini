@@ -45,11 +45,10 @@ public class Point {
     /**
      * KT 인증시 포인트 지급
      */
-    public static void pointIncrease(Verified verified) {
-        repository().findBySubscriberId(verified.getId()).ifPresent(subscriber -> {
-            if ("KT".equalsIgnoreCase(verified.getTelecom())) {
-                subscriber.setPoint(subscriber.getPoint() + 5000);
-            }
+    public static void pointIncrease_verified(Verified verified) {
+        repository().findBySubscriberId(verified.getSubscriberId()).ifPresent(subscriber -> {
+            subscriber.setPoint(subscriber.getPoint() + 5000);
+            
             repository().save(subscriber);
         });
     }
@@ -80,7 +79,7 @@ public class Point {
      * 구독권(티켓) 구매
      */
     public static void purchaseTicket(){
-        
+
     }
 }
 

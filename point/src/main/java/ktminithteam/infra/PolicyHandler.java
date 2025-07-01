@@ -30,10 +30,15 @@ public class PolicyHandler {
      /**
      * [KT 인증됨 이벤트] KT 회원 인증시 포인트 추가 지급
      */
-    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='Verified'")
+    @StreamListener(
+        value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='Verified'"
+    )
     public void wheneverVerified_Verified(@Payload Verified verified) {
+        Verified event = verified;
         System.out.println("\n\n##### listener Verified : " + verified + "\n\n");
-        Point.pointIncrease(verified);
+
+        Point.pointIncrease_verified(event);
     }
 
     /**
