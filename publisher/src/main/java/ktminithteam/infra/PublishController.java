@@ -21,7 +21,7 @@ public class PublishController {
     @Autowired
     OpenAIApiClient aiClient;
 
-    @PutMapping("/publish/{id}/confirm")
+    @PutMapping("/{id}/confirm")
     public void confirmPublish(@PathVariable Long id) {
         Publish publish = publishRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("출간 정보를 찾을 수 없습니다"));
@@ -30,14 +30,15 @@ public class PublishController {
         publishRepository.save(publish); // DB에 반영
     }
 
-    @GetMapping("/publish") //조회
+    @GetMapping //조회
     public List<Publish> getAllPublishes() {
         Iterable<Publish> iterable = publishRepository.findAll();
         List<Publish> list = new ArrayList<>();
         iterable.forEach(list::add);
         return list;
     }
-    @GetMapping("/publish/{id}") //상세 조회
+
+    @GetMapping("/{id}") //상세 조회
     public Publish getPublishById(@PathVariable Long id) {
         return publishRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("출간 정보를 찾을 수 없습니다"));
@@ -50,19 +51,27 @@ public class PublishController {
         if (optional.isPresent()) {
             Publish publish = optional.get();
 
-            String summary = aiClient.generateSummary(event.getContent());
-            String category = aiClient.classifyCategory(event.getContent());
-            String coverUrl = aiClient.generateCover(event.getTitle());
+            // event가 아니라 publish의 필드 사용
+            String summary = aiClient.generateSummary(publish.getContent());
+            String category = aiClient.classifyCategory(publish.getContent());
+            String coverUrl = aiClient.generateCover(publish.getTitle());
 
             publish.setSummaryUrl(summary);
-            publish.setCoverUrl(category);
-            publish.setCategory(coverUrl);
+            publish.setCategory(category);
+            publish.setCoverUrl(coverUrl);
 
             publishRepository.save(publish);
-            return "출간 정보가 재생성되었습니다.";
+
+            return "재시도 완료";
         } else {
             return "해당 출간 정보를 찾을 수 없습니다.";
         }
+    }
+
+    // authorId로 출간 목록 전체 조회 API (쿼리 파라미터, /publishes?authorId=xxx)
+    @GetMapping(params = "authorId")
+    public List<Publish> getPublishesByAuthorId(@RequestParam Long authorId) {
+        return publishRepository.findAllByAuthorId(authorId);
     }
 }
 //>>> Clean Arch / Inbound Adaptor

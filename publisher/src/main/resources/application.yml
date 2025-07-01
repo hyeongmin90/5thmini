@@ -4,6 +4,12 @@ server:
 spring:
   application:
     name: publisher
+
+openai:
+  api-key:
+  chat-url: https://api.openai.com/v1/chat/completions
+  image-url: https://api.openai.com/v1/images/generations
+
 ---
 
 spring:
@@ -11,6 +17,7 @@ spring:
   jpa:
     properties:
       hibernate:
+        ddl-auto: create
         show_sql: true
         format_sql: true
         implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
@@ -44,7 +51,6 @@ logging:
   level:
     org.hibernate.type: trace
     org.springframework.cloud: debug
-
 
 server:
   port: 8086
@@ -80,10 +86,3 @@ spring:
         event-out:
           destination: ktminithteam
           contentType: application/json
-
-openai:
- 
-  chat-url: https://api.openai.com/v1/chat/completions
-  image-url: https://api.openai.com/v1/images/generations
-
-

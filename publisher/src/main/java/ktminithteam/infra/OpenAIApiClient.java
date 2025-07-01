@@ -58,6 +58,13 @@ public class OpenAIApiClient {
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
         Map response = restTemplate.postForObject(chatUrl, request, Map.class);
 
-        return (String) ((Map)((List)((Map) response.get("choices")).get(0)).get("message")).get("content");
+        // 수정: 응답에서 choices를 올바르게 파싱
+        List choices = (List) response.get("choices");
+        if (choices != null && !choices.isEmpty()) {
+            Map firstChoice = (Map) choices.get(0);
+            Map message = (Map) firstChoice.get("message");
+            return (String) message.get("content");
+        }
+        return "";
     }
 }

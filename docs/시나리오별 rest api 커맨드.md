@@ -109,6 +109,7 @@ cd /bin
         }
         ```
         
+- **출간 요청  (Publisher)**
     - 이벤트 수신 시 `Publish` 도메인에 저장 (초기 상태: `isAccept=false`)
 - **AI 결과 반영 (AI 자동화 서비스)**
     - HTTP API:

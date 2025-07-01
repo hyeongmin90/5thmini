@@ -24,14 +24,17 @@ public class Publish {
     private Long manuscriptId;
     private Boolean isAccept;
 
+    @Column(length = 1000)
     private String summaryUrl;
 
+    @Column(length = 1000)
     private String coverUrl;
 
     private String content;
 
     private Date createdAt;
 
+    @Column(length = 500)
     private String category;
 
     private Long cost;
