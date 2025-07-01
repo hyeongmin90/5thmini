@@ -94,7 +94,81 @@ cd /bin
 
 - 구독권 구매(구독자)
   - http localhost:8085/points/purchase subscriberId=1
-  
+
+- **구독 서비스 이벤트 수신 (내부)**
+- 구독 요청
+  - Kafka 이벤트: 'RequestSubscribed'
+  - event
+  ```json
+  {
+    "eventType":"RequestSubscribed",
+    "timestamp":1751347414574,
+    "subscribeId":3,
+    "subscriberId":1,
+    "publishId":2,
+    "cost":1100
+  }
+  ```
+
+- 회원가입 포인트 지급 요청
+  - Kafka 이벤트: 'SignedUp'
+  - event
+    ```json
+    {
+      "eventType": "SignedUp",
+      "timestamp": 1751310119264,
+      "subscriberId": 1,
+      "telecom": "SKT"
+    }
+    ```
+- KT 인증 포인트 지급 요청
+  - Kafka 이벤트: 'Verified'
+  - event
+    ``` json
+    {
+      "eventType":"Verified",
+      "timestamp":1751347037552,
+      "subscriberId":1,
+      "telecom":"KT"
+    }
+    ```
+
+- **포인트 서비스 이벤트 송신 (내부)**
+- 구독 성공시
+  - Kafka 이벤트: 'Substart'
+  - event
+  - 포인트 소모
+    ```json
+    {
+      "eventType":"Substart",
+      "timestamp":1751347108904,
+      "id":5,"subscribeId":5,
+      "subscriberId":1,
+      "expirationDate":"null"
+    }
+    ```
+  - 구독권 사용
+    ```json
+    {
+      "eventType":"Substart",
+      "timestamp":1751347108904,
+      "id":5,"subscribeId":5,
+      "subscriberId":1,
+      "expirationDate":"2025-07-31"
+    }
+    ```
+- 구독 실패시   
+  - Kafka 이벤트: 'RejectSubscribe'
+  - event
+    ```json
+    {
+      "eventType":"RejectSubscribe",
+      "timestamp":1751347414582,
+      "id":6,
+      "subscribeId":3,
+      "subscriberId":1
+    }
+    ```
 
 ## Publisher
 
