@@ -16,8 +16,6 @@ cd /bin
 - 작가 로그인 (작가)
   - http POST localhost:8082/authors/login email="test@aivle.com" password="testtest"
 
----
-
 ## Manuscript
 
 - 원고 등록 (작가)
