@@ -82,6 +82,7 @@ public class PlatformController {
             return new RecommendBookDto(
                     pub.getTitle(),
                     pub.getAuthorId(),
+                    pub.getPublishId(),
                     pub.getCoverUrl(),
                     pub.getSummaryUrl(),
                     pub.getCategory(),

@@ -10,6 +10,7 @@ import lombok.Setter;
 public class RecommendBookDto {
     private String title;
     private Long authorId;
+    private Long publishId;
     private String coverUrl;
     private String summaryUrl;
     private String category;
