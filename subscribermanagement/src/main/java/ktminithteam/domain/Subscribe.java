@@ -1,15 +1,8 @@
 package ktminithteam.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import javax.persistence.*;
 import ktminithteam.SubscribermanagementApplication;
-import ktminithteam.domain.RequestSubscribed;
-import ktminithteam.domain.SubscribeSucceed;
 import ktminithteam.infra.ApplicationContextProvider;
 import ktminithteam.infra.BookInfoRepository;
 import lombok.Data;
@@ -31,8 +24,6 @@ public class Subscribe {
     private String status;
 
     private LocalDate expirationDate;
-
-    private Long cost;
 /**
 @done cost를 bookinfo에서 가져와 카프카 필드에 채움
 response에는 반영 안되어 확인 불가  -> 카프카 이벤트에서 확인
@@ -52,7 +43,7 @@ response에는 반영 안되어 확인 불가  -> 카프카 이벤트에서 확�
 
         if (book != null)
             requestSubscribed.setCost(book.getCost());
-    
+
         requestSubscribed.publishAfterCommit();
     } 
 
