@@ -16,7 +16,13 @@ spec:
     spec:
       containers:
         - name: publisher
-          image: "username/publisher:latest"
+          image: "project05.azurecr.io/publisher:v1"
+          env:
+          - name: API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: my-api-key
+                key: API_KEY
           ports:
             - containerPort: 8080
           readinessProbe:
