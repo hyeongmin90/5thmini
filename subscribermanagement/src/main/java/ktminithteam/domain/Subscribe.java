@@ -74,6 +74,8 @@ response에는 반영 안되어 확인 불가  -> 카프카 이벤트에서 확�
 
             if (substart.getExpirationDate() != null)
                 subscribe.setExpirationDate(substart.getExpirationDate());
+            SubscribeSucceed subscribeSucceed = new SubscribeSucceed(subscribe);
+            subscribeSucceed.publishAfterCommit();
             repository().save(subscribe);
         });
     }
