@@ -13,7 +13,7 @@ public class SubscribeSucceed extends AbstractEvent {
 
     private Long subscribeId;
     private Long subscriberId;
-    private Date expirationDate;
+    private LocalDate expirationDate;
     private Long publishId;
 
     public SubscribeSucceed(Subscribe aggregate) {

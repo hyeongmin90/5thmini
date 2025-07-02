@@ -12,6 +12,7 @@ import lombok.*;
 public class BookPublished extends AbstractEvent {
 
     private Long publishId;
+    private Long authorId;
     private Long manuscriptId;
     private String title;
     private String content;
@@ -25,6 +26,7 @@ public class BookPublished extends AbstractEvent {
     public BookPublished(Publish aggregate) {
         super(aggregate);
         this.publishId = aggregate.getPublishId();
+        this.authorId = aggregate.getAuthorId();
         this.manuscriptId = aggregate.getManuscriptId();
         this.title = aggregate.getTitle();
         this.content = aggregate.getContent();
