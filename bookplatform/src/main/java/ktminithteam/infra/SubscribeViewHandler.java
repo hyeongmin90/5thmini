@@ -30,7 +30,7 @@ public class SubscribeViewHandler {
             // view 객체 생성
             Subscribe subscribe = new Subscribe();
             // view 객체에 이벤트의 Value 를 set 함
-            subscribe.setSubscribeId(subscribeSucceed.getId());
+            subscribe.setSubscribeId(subscribeSucceed.getSubscribeId());
             subscribe.setSubscriberId(subscribeSucceed.getSubscriberId());
             subscribe.setPublishId(subscribeSucceed.getPublishId());
             subscribe.setExpirationDate(
