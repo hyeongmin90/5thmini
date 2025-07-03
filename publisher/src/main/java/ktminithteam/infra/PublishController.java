@@ -1,5 +1,6 @@
 package ktminithteam.infra;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.Optional;
 import javax.transaction.Transactional;
@@ -16,7 +17,7 @@ public class PublishController {
     PublishRepository publishRepository;
 
     @Autowired
-    PublishService publishService;
+    S3Service s3Service;
 
     @Autowired
     OpenAIApiClient aiClient;
@@ -46,7 +47,7 @@ public class PublishController {
 
     // 출간 재수행 API
     @PostMapping("/{id}/retry")
-    public String retryPublish(@PathVariable Long id) {
+    public String retryPublish(@PathVariable Long id) throws IOException {
         Optional<Publish> optional = publishRepository.findById(id);
         if (optional.isPresent()) {
             Publish publish = optional.get();
@@ -55,8 +56,10 @@ public class PublishController {
             String summary = aiClient.generateSummary(publish.getContent());
             String category = aiClient.classifyCategory(publish.getContent());
             String coverUrl = aiClient.generateCover(publish.getTitle());
+            UUID uuid = UUID.randomUUID();
+            String summaryUrl = s3Service.uploadSummaryAsPdf(summary, uuid.toString());
 
-            publish.setSummaryUrl(summary);
+            publish.setSummaryUrl(summaryUrl);
             publish.setCategory(category);
             publish.setCoverUrl(coverUrl);
 
