@@ -10,6 +10,12 @@ openai:
   chat-url: https://api.openai.com/v1/chat/completions
   image-url: https://api.openai.com/v1/images/generations
 
+aws:
+  access-key: ${AWS_ACCESS_KEY_ID:}
+  secret-key: ${AWS_SECRET_ACCESS_KEY:}
+  region: ap-southeast-2
+  bucket: mini5-a071201
+
 ---
 
 spring:
