@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: subscribermanagement
+        sider.istio.io/inject: "true"
     spec:
       containers:
         - name: subscribermanagement

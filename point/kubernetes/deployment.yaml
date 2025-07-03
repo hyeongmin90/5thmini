@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: point
+        sider.istio.io/inject: "true"
     spec:
       containers:
         - name: point
