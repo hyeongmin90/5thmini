@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: publisher
-          image: "project05.azurecr.io/publisher:v1"
+          image: "project05.azurecr.io/publisher:latest"
           env:
           - name: API_KEY
             valueFrom:
