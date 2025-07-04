@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: subscribermanagement
-          image: "project05.azurecr.io/subscribermanagement:v1"
+          image: "project05.azurecr.io/subscribermanagement:latest"
           ports:
             - containerPort: 8080
           readinessProbe:

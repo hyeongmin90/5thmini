@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: bookplatform
-          image: "project05.azurecr.io/bookplatform:v1"
+          image: "project05.azurecr.io/bookplatform:latest"
           ports:
             - containerPort: 8080
           readinessProbe:
