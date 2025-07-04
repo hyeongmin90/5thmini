@@ -80,7 +80,7 @@ spring:
         - id: bookplatform
           uri: http://bookplatform:8080
           predicates:
-            - Path=, /subscribeBooks/**, /publishBooks/**
+            - Path=/bookplatform/**,
         - id: frontend
           uri: http://frontend:8080
           predicates:
