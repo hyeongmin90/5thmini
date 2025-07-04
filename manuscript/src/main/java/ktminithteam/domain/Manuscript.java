@@ -30,14 +30,16 @@ public class Manuscript {
     private BookStatus status; // "DRAFT", "TEMP_SAVE", "FINAL_SAVE", "REQUESTED"
 
     
-    public void saveTemporarily(String newContent) {
+    public void saveTemporarily(String title, String newContent) {
+        this.title = title;
         this.content = newContent;
         this.status = BookStatus.TEMP_SAVE;
         this.updatedAt = new Date();
     }
 
     
-    public void saveFinal(String finalContent) {
+    public void saveFinal(String title, String finalContent) {
+        this.title = title;
         this.content = finalContent;
         this.status = BookStatus.FINAL_SAVE;
         this.updatedAt = new Date();

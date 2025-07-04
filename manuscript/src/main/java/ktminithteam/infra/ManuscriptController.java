@@ -32,7 +32,7 @@ public class ManuscriptController {
     public ResponseEntity<?> saveTemporary(@PathVariable Long id, @RequestBody Map<String, String> request) {
         Manuscript manuscript = manuscriptRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("원고 없음"));
-        manuscript.saveTemporarily(request.get("content"));
+        manuscript.saveTemporarily(request.get("title"), request.get("content"));
         manuscriptRepository.save(manuscript);
         return ResponseEntity.ok("임시 저장 완료");
     }
@@ -41,7 +41,7 @@ public class ManuscriptController {
     public ResponseEntity<?> saveFinal(@PathVariable Long id, @RequestBody Map<String, String> request) {
         Manuscript manuscript = manuscriptRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("원고 없음"));
-        manuscript.saveFinal(request.get("content"));
+        manuscript.saveFinal(request.get("title"), request.get("content"));
         manuscriptRepository.save(manuscript);
         return ResponseEntity.ok("최종 저장 완료");
     }

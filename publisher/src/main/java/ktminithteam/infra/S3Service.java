@@ -18,6 +18,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 public class S3Service {
@@ -54,30 +55,43 @@ public class S3Service {
         return "https://" + bucket + ".s3." + region.id() + ".amazonaws.com/" + key;
     }
 
-    public String uploadSummaryAsPdf(String summary, String key) throws IOException, DocumentException {
-        // 1. Create PDF in memory
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Document document = new Document();
-        PdfWriter.getInstance(document, baos);
-        document.open();
-        BaseFont bf = BaseFont.createFont("src/main/resources/fonts/NanumGothic.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-        Font font = new Font(bf, 12);
+    public String uploadSummaryAsPdf(String summary, String key) {
+        try {
+            // 1. Create PDF in memory
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Document document = new Document();
+            PdfWriter.getInstance(document, baos);
+            document.open();
+            InputStream fontStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("fonts/NanumGothic.ttf");
+            if (fontStream == null) {
+                throw new RuntimeException("폰트 파일을 classpath에서 찾을 수 없습니다: fonts/NanumGothic.ttf");
+            }
+            BaseFont bf = BaseFont.createFont(
+                    "fonts/NanumGothic.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED,
+                    false, fontStream.readAllBytes(), null
+            );
+            Font font = new Font(bf, 12);
 
-        document.add(new Paragraph(summary, font));
-        document.close();
+            document.add(new Paragraph(summary, font));
+            document.close();
 
-        // 2. Upload PDF to S3
-        String pdfKey = key.endsWith(".pdf") ? key : key + ".pdf";
-        s3Client.putObject(
-                PutObjectRequest.builder()
-                        .bucket(bucket)
-                        .key(pdfKey)
-                        .contentType("application/pdf")
-                        .build(),
-                RequestBody.fromBytes(baos.toByteArray())
-        );
+            // 2. Upload PDF to S3
+            String pdfKey = key.endsWith(".pdf") ? key : key + ".pdf";
+            s3Client.putObject(
+                    PutObjectRequest.builder()
+                            .bucket(bucket)
+                            .key(pdfKey)
+                            .contentType("application/pdf")
+                            .build(),
+                    RequestBody.fromBytes(baos.toByteArray())
+            );
 
-        // 3. Return S3 URL
-        return "https://" + bucket + ".s3." + region.id() + ".amazonaws.com/" + pdfKey;
+            // 3. Return S3 URL
+            return "https://" + bucket + ".s3." + region.id() + ".amazonaws.com/" + pdfKey;
+        } catch (Exception e) {
+            System.out.println("⚠\uFE0F pdf 생성 실패:" + e.getMessage());
+            e.printStackTrace();
+        }
+        return "";
     }
 }
